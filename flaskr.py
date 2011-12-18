@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from contectlib import closing
+from contextlib import closing
 from flask import abort
 from flask import flash
 from flask import Flask
@@ -17,8 +17,9 @@ app.config.from_pyfile('setup.py', silent=False)
 
 @app.route('/')
 def show_entries():
-    cur = query_db('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    entries = query_db('select title, text from entries order by id desc')
+    # cur = g.db.execute('select title, text from entries order by id desc')
+    # entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
 
 
@@ -29,6 +30,8 @@ def add_entry():
     g.db.execute('insert into entries (title, text) values (?, ?)',
              [request.form['title'], request.form['text']])
     g.db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('show_entries'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
