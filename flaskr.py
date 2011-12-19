@@ -12,7 +12,7 @@ from flask import url_for
 import sqlite3
 
 app = Flask(__name__)
-app.config.from_pyfile('setup.py', silent=False)
+app.config.from_pyfile('setup.cfg', silent=True)
 
 
 @app.route('/')
